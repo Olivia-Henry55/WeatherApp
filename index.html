@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-compable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Weather App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <style>
-    div.right {border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: solid;}
-    div.none {border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none;}
     .center {
         margin: auto;
         width: 50%;
         padding: 10px;
     }
-    table {font-size: 40px;}
 </style>
 <body class="bg-dark">
     <div class="d-flex justify-content-center align-items-center vh-100">
-        <form id="frmWeather" class="card col-12 col-md-7 col-lg-5 mt-4 mb-4 bg-light">
+        <form id="frmWeather" class="card col-12 col-md-7 col-lg-5 mt-4 mb-4" style="background-color:rgb(224, 237, 237)">
             <div class="card-body">
-                <div class="row">
-                    <div class=" col center" style="text-align: center;">
-                        <i class="bi bi-geo-alt" style="font-size:50px; color:rgb(85, 0, 87)"></i>
-                        <h2 class="text" style="color:rgb(85, 0, 87)">Cookeville</h2>
+                <div class="row" style="background-color:rgb(255, 255, 255)">
+                    <div class="col center" style="text-align: center;">
+                        <div class="card custom" style="background-color:rgb(249, 222, 249)">
+                            <i class="bi bi-geo-alt" style="font-size:50px; color:rgb(85, 0, 87)"></i>
+                            <h4 style="font-size:30px; color:rgb(85, 0, 87)"><b>Cookeville</b></h4>
+                        </div>
                     </div>
-                    <div class="right col" style="text-align: center">
-                        <h4 class="mb-1"style="font-size:30px; color:rgb(0, 10, 83);"><b>Current Conditions</b></h4>
-                        <i id="weatherCodeImg" class="mb-1" style="font-size:55px; color:rgb(0, 10, 83);"></i>
-                        <h5 id="txtCurrentWeather" class="mb-1" style="font-size:25px; color:rgb(0, 10, 83);"></h5>
-                        <hr />
+                    <div class="col" style="text-align: center;">
+                        <div class="card mt-3" style="background-color:rgb(227, 230, 255);">
+                            <h4 class="mb-1"style="font-size:30px; color:rgb(0, 10, 83);"><b>Current Conditions</b></h4>
+                            <i id="weatherCodeImg" class="mb-1" style="font-size:55px; color:rgb(0, 10, 83);"></i>
+                            <h5 id="txtCurrentWeather" class="mb-1" style="font-size:25px; color:rgb(0, 10, 83);"></h5>
+                        </div>
                         <div class="row">
                             <div class="col" style="text-align: center">
-                                <i id="tempImg" style="color:rgb(191, 126, 45); font-size:40px;"><h6 id="txtTemp" style="color:black;"></h6></i>
+                                <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217);">
+                                    <i id="tempImg" style="color:rgb(191, 126, 45); font-size:40px;"><h6 id="txtTemp" style="color:black;"></h6></i>
+                                </div>
                             </div>
                             <div class="col" style="text-align: center">
-                                <i id="humidImg" style="color:rgb(17, 131, 238); font-size:40px;"><p id="txtHumid" style="color:black;"></p></i>
+                                <div class="card mt-3 mb-3" style="background-color:rgb(225, 241, 255);">
+                                    <i id="humidImg" style="color:rgb(17, 131, 238); font-size:40px;"><h6 id="txtHumid" style="color:black;"></h6></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -222,6 +228,16 @@
 
         } catch (objError){
             console.log('Error fetching objData', objError)
+            document.querySelector('#weatherCodeImg').className="bi bi-exclamation-circle"
+            document.querySelector('#weatherCodeImg').setAttribute("alt", "Error")
+            strCurrentWeather = "<b>Something went wrong</b>"
+            document.querySelector('#tempImg').className="bi bi-thermometer-high"
+            strTemp = "<b>--°F</b>"
+            document.querySelector('#humidImg').className="bi bi-droplet-fill"
+            strHumidity = "<b>--%</b>"
+            document.querySelector('#txtCurrentWeather').innerHTML = strCurrentWeather
+            document.querySelector('#txtTemp').innerHTML = strTemp
+            document.querySelector('#txtHumid').innerHTML = strHumidity 
         }
     }
     getWeather()
