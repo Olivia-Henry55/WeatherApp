@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    
+    <link rel="manifest" href="manifest.json" />
     <title>Weather App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -29,16 +29,14 @@
                     <div class="col center" style="text-align: center;">
                         <!-- makes a card to display the location -->
                         <div class="card custom" style="background-color:rgb(249, 222, 249)">
-                            <i id="locationImg" class="bi bi-geo-alt" style="font-size:50px; color:rgb(85, 0, 87)"></i>
-                            <h4 style="font-size:30px; color:rgb(85, 0, 87)"><b>Cookeville</b></h4>
+                            <i id="locationImg" class="bi bi-geo-alt" style="font-size:50px; color:rgb(85, 0, 87)"><h4 style="font-size:30px; color:rgb(85, 0, 87); font-style: normal;"><b>Cookeville</b></h4></i>
                         </div>
                     </div>
                     <div class="col" style="text-align: center;">
                         <!-- makes a card to display the current conditions -->
                         <div class="card mt-3" style="background-color:rgb(227, 230, 255);">
                             <h4 class="mb-1"style="font-size:30px; color:rgb(0, 10, 83);"><b>Current Conditions</b></h4>
-                            <i id="weatherCodeImg" class="mb-1" style="font-size:55px; color:rgb(0, 10, 83);"></i>
-                            <h5 id="txtCurrentWeather" class="mb-1" style="font-size:25px; color:rgb(0, 10, 83);"></h5>
+                            <i id="weatherCodeImg" class="mb-1" style="font-size:55px; color:rgb(0, 10, 83);"><h5 id="txtCurrentWeather" class="mb-1" style="font-size:25px; color:rgb(0, 10, 83); font-style: normal;"></h5></i>
                         </div>
                         <!-- splits the column into a row -->
                         <div class="row">
