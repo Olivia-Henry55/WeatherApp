@@ -67,209 +67,209 @@
 <script>
     async function getWeather() {
         try{
-            // // Fetches data from the api
-            // const objResponse = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.1628&longitude=-85.5016&current=temperature_2m,relative_humidity_2m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch')
+            // Fetches data from the api
+            const objResponse = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.1628&longitude=-85.5016&current=temperature_2m,relative_humidity_2m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch')
             
-            // // Checks to see if the returned response is ok
-            // if(!objResponse.ok){
-            //     throw new Error(`HTTP Error Status: ${objResponse.status}`)
-            // }
+            // Checks to see if the returned response is ok
+            if(!objResponse.ok){
+                throw new Error(`HTTP Error Status: ${objResponse.status}`)
+            }
 
             // Sets const and let to store the data
             const objData = await objResponse.json()
             document.querySelector('#locationImg').setAttribute('aria-label','Location')
-            // const currentData = objData.current
-            // let temperature = currentData.temperature_2m
-            // let humidity = currentData.relative_humidity_2m
-            // let weatherCode = currentData.weather_code
+            const currentData = objData.current
+            let temperature = currentData.temperature_2m
+            let humidity = currentData.relative_humidity_2m
+            let weatherCode = currentData.weather_code
 
-            // // Create strings to return the data
-            // let strTemp = '<h6><b>'
-            // let strHumidity = '<h6><b>'
-            // let strWeatherCode = '<h6> Weather Code: '
+            // Create strings to return the data
+            let strTemp = '<h6><b>'
+            let strHumidity = '<h6><b>'
+            let strWeatherCode = '<h6> Weather Code: '
 
-            // // Rounds the temperature up or down
-            // temperature = Math.round(temperature)
+            // Rounds the temperature up or down
+            temperature = Math.round(temperature)
 
-            // // Checks the weather code and returns an icon and text for the current conditions
-            // if (weatherCode === 0){
-            //     document.querySelector('#weatherCodeImg').className="bi bi-sun"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Sun')
-            //     strCurrentWeather = "<b>Clear Sky</b>"
-            // }
-            // else if(weatherCode === 1 || weatherCode === 2 || weatherCode === 3){
-            //     document.querySelector('#weatherCodeImg').className="bi bi-clouds"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Clouds')
-            //     if (weatherCode === 1) {
-            //         strCurrentWeather = "<b>Mainly Clear</b>"
-            //     }
-            //     else if (weatherCode === 2) {
-            //         strCurrentWeather = "<b>Partly Cloudy</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Overcast</b>"
-            //     }
-            // }
-            // else if(weatherCode === 45 || weatherCode === 48){
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-haze"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with haze')
-            //     if (weatherCode === 45){
-            //         strCurrentWeather = "<b>Fog</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Depositing Rime Fog</b>"
-            //     }
-            // }
-            // else if (weatherCode === 51 || weatherCode === 53 || weatherCode === 55) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
-            //     if (weatherCode === 51) {
-            //         strCurrentWeather = "<b>Light Drizzle</b>"
-            //     }
-            //     else if (weatherCode === 53) {
-            //         strCurrentWeather = "<b>Moderate Drizzle</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Heavy Drizzle</b>"
-            //     }
-            // }
-            // else if (weatherCode === 56 || weatherCode === 57) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle-fill"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
-            //     if (weatherCode === 56){
-            //         strCurrentWeather = "<b>Light Freezing Drizzle</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Heavy Freezing Drizzle</b>"
-            //     }
-            // }
-            // else if (weatherCode === 61 || weatherCode === 63 || weatherCode === 65) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
-            //     if (weatherCode === 61) {
-            //         strCurrentWeather = "<b>Light Rain</b>"
-            //     }
-            //     else if (weatherCode === 63) {
-            //         strCurrentWeather = "<b>Moderate Rain</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Heavy Rain</b>"
-            //     }
-            // }
-            // else if (weatherCode === 66 || weatherCode === 67) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain-fill"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
-            //     if (weatherCode === 66){
-            //         strCurrentWeather = "<b>Light Freezing Rain</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Heavy Freezing Rain</b>"
-            //     }
-            // }
-            // else if (weatherCode === 71 || weatherCode === 73 || weatherCode === 75) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow-fill"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
-            //     if (weatherCode === 71) {
-            //         strCurrentWeather = "<b>Light Snow Fall</b>"
-            //     }
-            //     else if (weatherCode === 73) {
-            //         strCurrentWeather = "<b>Moderate Snow Fall</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Heavy Snow Fall</b>"
-            //     }
-            // }
-            // else if (weatherCode === 77) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-sleet"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with sleet')
-            //     strCurrentWeather = "<b>Snow Grains</b>"
-            // }
-            // else if (weatherCode === 80 || weatherCode === 81 || weatherCode === 82) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
-            //     if (weatherCode === 80) {
-            //         strCurrentWeather = "<b>Light Rain Showers</b>"
-            //     }
-            //     else if (weatherCode === 81) {
-            //         strCurrentWeather = "<b>Moderate Rain Showers</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Heavy Rain Showers</b>"
-            //     }
-            // }
-            // else if(weatherCode === 85 || weatherCode === 86){
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
-            //     if (weatherCode === 85){
-            //         strCurrentWeather = "<b>Light Snow Showers</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Heavy Snow Showers</b>"
-            //     }
-            // }
-            // else if (weatherCode === 95) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
-            //     strCurrentWeather = "<b>Thunderstorm</b>"
-            // }
-            // else if (weatherCode === 96 || weatherCode === 99) {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain-fill"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
-            //     if (weatherCode === 96){
-            //         strCurrentWeather = "<b>Thunderstorm with Light Hail</b>"
-            //     }
-            //     else {
-            //         strCurrentWeather = "<b>Thunderstrom with Heavy Hail</b>"
-            //     }
-            // }
-            // else {
-            //     document.querySelector('#weatherCodeImg').className="bi bi-exclamation-circle"
-            //     document.querySelector('#weatherCodeImg').setAttribute('aria-label','Error')
-            //     strCurrentWeather = "<b>Something went wrong</b>"
-            //     console.log("This number is not regestered in the API")
-            // }
+            // Checks the weather code and returns an icon and text for the current conditions
+            if (weatherCode === 0){
+                document.querySelector('#weatherCodeImg').className="bi bi-sun"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Sun')
+                strCurrentWeather = "<b>Clear Sky</b>"
+            }
+            else if(weatherCode === 1 || weatherCode === 2 || weatherCode === 3){
+                document.querySelector('#weatherCodeImg').className="bi bi-clouds"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Clouds')
+                if (weatherCode === 1) {
+                    strCurrentWeather = "<b>Mainly Clear</b>"
+                }
+                else if (weatherCode === 2) {
+                    strCurrentWeather = "<b>Partly Cloudy</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Overcast</b>"
+                }
+            }
+            else if(weatherCode === 45 || weatherCode === 48){
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-haze"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with haze')
+                if (weatherCode === 45){
+                    strCurrentWeather = "<b>Fog</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Depositing Rime Fog</b>"
+                }
+            }
+            else if (weatherCode === 51 || weatherCode === 53 || weatherCode === 55) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
+                if (weatherCode === 51) {
+                    strCurrentWeather = "<b>Light Drizzle</b>"
+                }
+                else if (weatherCode === 53) {
+                    strCurrentWeather = "<b>Moderate Drizzle</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Heavy Drizzle</b>"
+                }
+            }
+            else if (weatherCode === 56 || weatherCode === 57) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle-fill"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
+                if (weatherCode === 56){
+                    strCurrentWeather = "<b>Light Freezing Drizzle</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Heavy Freezing Drizzle</b>"
+                }
+            }
+            else if (weatherCode === 61 || weatherCode === 63 || weatherCode === 65) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
+                if (weatherCode === 61) {
+                    strCurrentWeather = "<b>Light Rain</b>"
+                }
+                else if (weatherCode === 63) {
+                    strCurrentWeather = "<b>Moderate Rain</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Heavy Rain</b>"
+                }
+            }
+            else if (weatherCode === 66 || weatherCode === 67) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain-fill"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
+                if (weatherCode === 66){
+                    strCurrentWeather = "<b>Light Freezing Rain</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Heavy Freezing Rain</b>"
+                }
+            }
+            else if (weatherCode === 71 || weatherCode === 73 || weatherCode === 75) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow-fill"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
+                if (weatherCode === 71) {
+                    strCurrentWeather = "<b>Light Snow Fall</b>"
+                }
+                else if (weatherCode === 73) {
+                    strCurrentWeather = "<b>Moderate Snow Fall</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Heavy Snow Fall</b>"
+                }
+            }
+            else if (weatherCode === 77) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-sleet"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with sleet')
+                strCurrentWeather = "<b>Snow Grains</b>"
+            }
+            else if (weatherCode === 80 || weatherCode === 81 || weatherCode === 82) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
+                if (weatherCode === 80) {
+                    strCurrentWeather = "<b>Light Rain Showers</b>"
+                }
+                else if (weatherCode === 81) {
+                    strCurrentWeather = "<b>Moderate Rain Showers</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Heavy Rain Showers</b>"
+                }
+            }
+            else if(weatherCode === 85 || weatherCode === 86){
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
+                if (weatherCode === 85){
+                    strCurrentWeather = "<b>Light Snow Showers</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Heavy Snow Showers</b>"
+                }
+            }
+            else if (weatherCode === 95) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
+                strCurrentWeather = "<b>Thunderstorm</b>"
+            }
+            else if (weatherCode === 96 || weatherCode === 99) {
+                document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain-fill"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
+                if (weatherCode === 96){
+                    strCurrentWeather = "<b>Thunderstorm with Light Hail</b>"
+                }
+                else {
+                    strCurrentWeather = "<b>Thunderstrom with Heavy Hail</b>"
+                }
+            }
+            else {
+                document.querySelector('#weatherCodeImg').className="bi bi-exclamation-circle"
+                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Error')
+                strCurrentWeather = "<b>Something went wrong</b>"
+                console.log("This number is not regestered in the API")
+            }
 
-            // // Returns the icon for the current conditions
-            // document.querySelector('#txtCurrentWeather').innerHTML = strCurrentWeather
+            // Returns the icon for the current conditions
+            document.querySelector('#txtCurrentWeather').innerHTML = strCurrentWeather
 
 
-            // // Checks the temperature and changes the thermometer icon 
-            // if(temperature < 40) {
-            //     document.querySelector('#tempImg').className="bi bi-thermometer-low"
-            //     document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
-            // }
-            // else if (temperature < 70) {
-            //     document.querySelector('#tempImg').className="bi bi-thermometer-half"
-            //     document.querySelector('#tempImg').setAttribute('aria-label','Error')
-            // }
-            // else {
-            //     document.querySelector('#tempImg').className="bi bi-thermometer-high"
-            //     document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
-            // }
+            // Checks the temperature and changes the thermometer icon 
+            if(temperature < 40) {
+                document.querySelector('#tempImg').className="bi bi-thermometer-low"
+                document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
+            }
+            else if (temperature < 70) {
+                document.querySelector('#tempImg').className="bi bi-thermometer-half"
+                document.querySelector('#tempImg').setAttribute('aria-label','Error')
+            }
+            else {
+                document.querySelector('#tempImg').className="bi bi-thermometer-high"
+                document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
+            }
 
-            // // Checks the humidity and changes the water drop icon 
-            // if(humidity < 30) {
-            //     document.querySelector('#humidImg').className="bi bi-droplet"
-            //     document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
-            // }
-            // else if (humidity < 60) {
-            //     document.querySelector('#humidImg').className="bi bi-droplet-half"
-            //     document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
-            // }
-            // else {
-            //     document.querySelector('#humidImg').className="bi bi-droplet-fill"
-            //     document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
-            // }
+            // Checks the humidity and changes the water drop icon 
+            if(humidity < 30) {
+                document.querySelector('#humidImg').className="bi bi-droplet"
+                document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
+            }
+            else if (humidity < 60) {
+                document.querySelector('#humidImg').className="bi bi-droplet-half"
+                document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
+            }
+            else {
+                document.querySelector('#humidImg').className="bi bi-droplet-fill"
+                document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
+            }
             
-            // // Completes the strings to return the data
-            // strTemp += temperature + '°F</b></h6>'
-            // strHumidity += humidity + '%</b></h6>'
-            // strWeatherCode += weatherCode + '</h6>'
+            // Completes the strings to return the data
+            strTemp += temperature + '°F</b></h6>'
+            strHumidity += humidity + '%</b></h6>'
+            strWeatherCode += weatherCode + '</h6>'
         
-            // // Returns the data for temperature and humidity
-            // document.querySelector('#txtTemp').innerHTML = strTemp
-            // document.querySelector('#txtHumid').innerHTML = strHumidity 
-            // console.log(objData)
+            // Returns the data for temperature and humidity
+            document.querySelector('#txtTemp').innerHTML = strTemp
+            document.querySelector('#txtHumid').innerHTML = strHumidity 
+            console.log(objData)
 
         // Throws an error if the api is unreachable
         } catch (objError){
