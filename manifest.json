@@ -1,0 +1,14 @@
+{
+    "name": "Weather App",
+    "short_name": "Weather",
+    "start_url": "/WeatherApp",
+    "id": "/WeatherApp",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "images/shrek.png",
+            "sizes": "48x48",
+            "type": "image/png"
+        }
+    ]
+}
