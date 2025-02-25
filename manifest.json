@@ -3,12 +3,18 @@
     "short_name": "Weather",
     "start_url": "/WeatherApp",
     "id": "/WeatherApp",
-    "display": "standalone",
     "icons": [
         {
-            "src": "images/shrek.png",
-            "sizes": "48x48",
+            "src": "images/192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "images/512.png",
+            "sizes": "512x512",
             "type": "image/png"
         }
-    ]
+    ],
+    "display": "standalone",
+    "background_color": "#b5f4f7"
 }
