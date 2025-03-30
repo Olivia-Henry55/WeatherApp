@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="manifest" href="manifest.json" />
+    <!-- <link rel="manifest" href="manifest.json" /> -->
     <title>Weather App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/flatly/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -18,254 +18,501 @@
         width: 50%;
         padding: 10px;
     }
+    .btn-group button {
+        background-color: rgb(189, 222, 222); /* Green background */
+        border: 1px solid rgb(137, 148, 148); /* Green border */
+        color: black; /* White text */
+        padding: 9px 23px; /* Some padding */
+        cursor: pointer; /* Pointer/hand icon */
+        float: left; /* Float the buttons side by side */
+    }
+
+    /* Clear floats (clearfix hack) */
+    .btn-group:after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    .btn-group button:not(:last-child) {
+        border-right: none; /* Prevent double borders */
+    }
+
+    /* Add a background color on hover */
+    .btn-group button:hover {
+        background-color: rgb(68, 75, 75);
+        color: white
+    }
 </style>
 <body class="bg-dark">
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <form id="frmWeather" class="card col-12 col-md-7 col-lg-5 mt-4 mb-4" style="background-color:rgb(224, 237, 237)">
+    <div class="d-flex justify-content-center align-items-center vh-auto">
+        <form class="card col-12 col-md-7 col-lg-5 mt-4 mb-4" id="frmSearch" style="background-color:rgb(224, 237, 237); margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%);transform: translateY(-50%);">
             <div class="card-body">
-                <!-- splits the card into a row -->
                 <div class="row" style="background-color:rgb(255, 255, 255)">
-                    <!-- splits the row into 2 columns -->
-                    <div class="col center" style="text-align: center;">
-                        <!-- makes a card to display the location -->
-                        <div class="card custom" style="background-color:rgb(249, 222, 249)">
-                            <i id="locationImg" class="bi bi-geo-alt" style="font-size:50px; color:rgb(85, 0, 87)"><h4 style="font-size:30px; color:rgb(85, 0, 87); font-style: normal;"><b>Cookeville</b></h4></i>
-                        </div>
-                    </div>
-                    <div class="col" style="text-align: center;">
-                        <!-- makes a card to display the current conditions -->
-                        <div class="card mt-3" style="background-color:rgb(227, 230, 255);">
-                            <h4 class="mb-1"style="font-size:30px; color:rgb(0, 10, 83);"><b>Current Conditions</b></h4>
-                            <i id="weatherCodeImg" class="mb-1" style="font-size:55px; color:rgb(0, 10, 83);"><h5 id="txtCurrentWeather" class="mb-1" style="font-size:25px; color:rgb(0, 10, 83); font-style: normal;"></h5></i>
-                        </div>
-                        <!-- splits the column into a row -->
-                        <div class="row">
-                            <!-- splits the row into two columns -->
-                            <div class="col" style="text-align: center">
-                                <!-- makes a card to display the curent temperature -->
-                                <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217);">
-                                    <i id="tempImg" style="color:rgb(191, 126, 45); font-size:40px;"><h6 id="txtTemp" style="color:black;"></h6></i>
-                                </div>
-                            </div>
-                            <div class="col" style="text-align: center">
-                                <!-- makes a card to display the curent humidity -->
-                                <div class="card mt-3 mb-3" style="background-color:rgb(225, 241, 255);">
-                                    <i id="humidImg" style="color:rgb(17, 131, 238); font-size:40px;"><h6 id="txtHumid" style="color:black;"></h6></i>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col center">
+                        <h2 class="text-center text-primary">Choose your location</h2>
+                        <label for="txtLocation" class="mb-1 mt-1">Enter a Location:</label>
+                        <input id="txtLocation" class="form-control mb-3" type="text" placeholder="Cookeville" aria-label="Input for Location">
+                        <button id="btnSearch" class="btn btn-primary col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-4 mt-1 mb-2" type="button">Search</button>
                     </div>
                 </div>
                 <hr />
                 <p class="mt-3" style="text-align: center">Made with <a href="https://open-meteo.com/en/docs" style="color:rgb(0, 0, 0);">Open-Meteo</a></p>
             </div>
         </form>
+        <form class="card col-12 col-md-7 col-lg-5 mt-4 mb-4" id="frmResults" style="display:none; background-color:rgb(224, 237, 237); margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%);transform: translateY(-50%);">
+            <div class="card-body">
+                <div class="row" style="background-color:rgb(255, 255, 255)">
+                    <div class="col center">
+                        <h2 class="text-center text-primary mb-2">Top Results</h2>
+                        <label for="cboLocation" class="mb-1 mt-1">Select a Location:</label>
+                        <select id="cboLocation" class="form-control mb-3" placeholder="Location" aria-label="Select a Location">
+                            <option value="">Select a Location</option>
+                        </select>
+                        <button id="btnContinue" class="btn btn-primary col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 mt-1" type="button">Continue</button>
+                        <button id="btnSwapSearch" class="btn btn-primary col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 mt-2" type="button">Back to Search</button>
+                    </div>
+                </div>
+                <hr />
+                <p class="mt-3" style="text-align: center">Made with <a href="https://open-meteo.com/en/docs" style="color:rgb(0, 0, 0);">Open-Meteo</a></p>
+            </div>
+        </form>
+        <form id="frmCurWeather" class="card col-12 col-md-7 col-lg-5 mt-4 mb-4" style="background-color:rgb(224, 237, 237); display:none;">
+            <div class="card-body">
+                    <div class="card" style="text-align: center; padding: 20px 20px 20px 20px;">
+                        <div class="card" style="text-align: center;">
+                            <!-- makes a card to display the location -->
+                            <div class="card" style="background-color:rgb(249, 222, 249)">
+                                <i id="locationImg" class="bi bi-geo-alt" style="font-size:50px; color:rgb(85, 0, 87)"><h4 id="txtLoc" style="font-size:30px; color:rgb(85, 0, 87); font-style: normal;"></h4></i>
+                            </div>
+                        </div>
+                        <!-- makes a card to display the current conditions -->
+                        <div class="card mt-3" style="background-color:rgb(227, 230, 255);">
+                            <h4 class="mb-1"style="font-size:30px; color:rgb(0, 10, 83);"><b>Current Conditions</b></h4>
+                            <i id="weatherCodeImg" class="mb-1" style="font-size:55px; color:rgb(0, 10, 83);"><h5 id="txtCurrentWeather" class="mb-1" style="font-size:25px; color:rgb(0, 10, 83); font-style: normal;"></h5></i>
+                            <!-- splits the column into a row -->
+                            <div class="row" style="padding: 0px 30px 0px 30px;">
+                                <!-- splits the row into two columns -->
+                                <div class="col" style="text-align: center;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217);">
+                                        <i id="tempImg" style="color:rgb(191, 126, 45); font-size:40px;"><h6 id="txtTemp" style="color:black;"></h6></i>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center;">
+                                    <!-- makes a card to display the curent humidity -->
+                                    <div class="card mt-3 mb-3" style="background-color:rgb(225, 241, 255);">
+                                        <i id="humidImg" style="color:rgb(17, 131, 238); font-size:40px;"><h6 id="txtHumid" style="color:black;"></h6></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- makes a card to display the current conditions -->
+                    <div class="card mt-3" style="background-color:rgb(227, 230, 255);">                            
+                        <h4 class="mb-1 text-center" style="font-size:30px; color:rgb(0, 10, 83);"><b>Hourly Conditions</b></h4>
+                        <div class="scrollmenu mt-2 mb-2" style="background-color:rgb(227, 230, 255); overflow: auto; white-space: nowrap;">
+                            <div style="display: inline-flex;">
+                                <!-- splits the row into two columns -->
+                                <div class="col" style="text-align: center; padding: 0px 0px 0px 10px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime1" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg1" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp1" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 0px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime2" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg2" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp2" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 0px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime3" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg3" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp3" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 0px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime4" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg4" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp4" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 0px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime5" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg5" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp5" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 10px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime6" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg6" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp6" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 10px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime7" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg7" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp7" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 10px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime8" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg8" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp8" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 10px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime9" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg9" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp9" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 10px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime10" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg10" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp10" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 10px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime11" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg11" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp11" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center; padding: 0px 10px 0px 25px; display: inline-block;">
+                                    <!-- makes a card to display the curent temperature -->
+                                    <div class="card  mt-3 mb-3" style="background-color:rgb(255, 238, 217); padding: 9px;">
+                                        <h6 id="txtTime12" class="mb-0" style="color:black;"></h6>
+                                        <i id="weatherCodeImg12" class="mb-1" style="font-size:40px; color:rgb(0, 10, 83);"></i>
+                                        <h6 id="txtTemp12" class="mb-0" style="color:black;"></h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <hr />
+                <p class="mt-3" style="text-align: center">Made with <a href="https://open-meteo.com/en/docs" style="color:rgb(0, 0, 0);">Open-Meteo</a></p>
+            </div>
+        </form>
+        <form id="frmWekWeather" class="card col-12 col-md-7 col-lg-5 mt-4 mb-4" style="background-color:rgb(224, 237, 237); display:none;">
+            <div class="row" style="background-color:rgb(255, 255, 255)">
+                <div class="btn-group" style="width:100%">
+                    <button id="btnCurWeather3" type="button" style="width:33.3%">Current</button>
+                    <button id="btnHorWeather3" type="button" style="width:33.3%">Hourly</button>
+                    <button id="btnWekWeather3" type="button" style="width:33.3%">Weekly</button>
+                </div>
+                </div>
+            <h1>Weekly Weather</h1>
+        </form>
     </div>
 </body>
 </html>
 
 <script>
-    async function getWeather() {
-        try{
-            // Fetches data from the api
-            const objResponse = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.1628&longitude=-85.5016&current=temperature_2m,relative_humidity_2m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch')
+    var arrLocations
+    var strLocation
+    var strLat
+    var strLon
+    var strName
+    var strTimezone
+    var hourlyData
+    var hourlyTemp
+    var hourlyConditions
+
+    document.querySelector("#btnSearch").addEventListener("click",(e) => {
+        strLocation = document.querySelector("#txtLocation").value
+        async function getLocation() {
+            try{
+                let locResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${strLocation}&count=10&language=en&format=json`)
+                let locData = await locResponse.json()
+                arrLocations = locData.results
+                console.log(arrLocations)
+                arrLocations.forEach((location) => {
+                    console.log(location)
+
+                    let strLocationforList = ''
+                    strLocationforList = location.name
+                    if ((location.admin1) != undefined) {
+                        strLocationforList += ', ' + location.admin1
+                    }
+                    if ((location.admin2) != undefined) {
+                        strLocationforList += ', ' + location.admin2 + ' county'
+                    }
+                    if ((location.country) != undefined) {
+                        strLocationforList += ', ' + location.country
+                    }
+
+                    document.querySelector('#cboLocation').innerHTML += `<option value="${strLocationforList}">${strLocationforList}</option>`
+                })
+
+            } catch (objError){
+                console.log('Error fetching objData', objError)
+            }
+        }
+        getLocation()
+
+        document.querySelector('#frmSearch').style.display = 'none'
+        document.querySelector('#frmResults').style.display = 'block'
+    })
+
+    document.querySelector("#btnContinue").addEventListener("click",(e) => {
+        document.querySelector('#frmResults').style.display = 'none'
+        document.querySelector('#frmCurWeather').style.display = 'block'
+
+        let strLoc = document.querySelector('#cboLocation').value
+
+        arrLocations.forEach((location) => {
+
+            let strLocationforList = ''
+            strLocationforList = location.name
+            if ((location.admin1) != undefined) {
+                strLocationforList += ', ' + location.admin1
+            }
+            if ((location.admin2) != undefined) {
+                strLocationforList += ', ' + location.admin2 + ' county'
+            }
+            if ((location.country) != undefined) {
+                strLocationforList += ', ' + location.country
+            }
+            if (strLocationforList == strLoc) {
+                strName = location.name
+                strLat = location.latitude
+                strLon = location.longitude
+                strTimezone = location.timezone
+            }
+        })
+        getWeather()
+    })
+
+        async function getWeather() {
+            document.querySelector('#txtLoc').innerHTML = '<h4><b>' + strName + '</b></h4>'
+            try{
+                // Fetches data from the api
+                const objResponse = await fetch('https://api.open-meteo.com/v1/forecast?latitude='+strLat+'&longitude='+strLon+'&hourly=temperature_2m,weather_code&current=temperature_2m,relative_humidity_2m,weather_code&timezone=America%2FChicago&forecast_days=2&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch')
+                
+                // Checks to see if the returned response is ok
+                if(!objResponse.ok){
+                    throw new Error(`HTTP Error Status: ${objResponse.status}`)
+                }
+
+                // Sets const and let to store the data
+                const objData = await objResponse.json()
+                document.querySelector('#locationImg').setAttribute('aria-label','Location')
+                const currentData = objData.current
+                let temperature = currentData.temperature_2m
+                let humidity = currentData.relative_humidity_2m
+                let weatherCode = currentData.weather_code
+                hourlyData = objData.hourly
+                hourlyTemp = hourlyData.temperature_2m
+                hourlyConditions = hourlyData.weather_code
+
+                // Create strings to return the data
+                let strTemp = '<h6><b>'
+                let strHumidity = '<h6><b>'
+                let strWeatherCode = '<h6> Weather Code: '
+
+                // Rounds the temperature up or down
+                temperature = Math.round(temperature)
+
+                // Checks the weather code and returns an icon and text for the current conditions
+                if (weatherCode === 0){
+                    document.querySelector('#weatherCodeImg').className="bi bi-sun"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Sun')
+                    strCurrentWeather = "<b>Clear Sky</b>"
+                }
+                else if(weatherCode === 1 || weatherCode === 2 || weatherCode === 3){
+                    document.querySelector('#weatherCodeImg').className="bi bi-clouds"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Clouds')
+                    if (weatherCode === 1) {
+                        strCurrentWeather = "<b>Mainly Clear</b>"
+                    }
+                    else if (weatherCode === 2) {
+                        strCurrentWeather = "<b>Partly Cloudy</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Overcast</b>"
+                    }
+                }
+                else if(weatherCode === 45 || weatherCode === 48){
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-haze"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with haze')
+                    if (weatherCode === 45){
+                        strCurrentWeather = "<b>Fog</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Depositing Rime Fog</b>"
+                    }
+                }
+                else if (weatherCode === 51 || weatherCode === 53 || weatherCode === 55) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
+                    if (weatherCode === 51) {
+                        strCurrentWeather = "<b>Light Drizzle</b>"
+                    }
+                    else if (weatherCode === 53) {
+                        strCurrentWeather = "<b>Moderate Drizzle</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Heavy Drizzle</b>"
+                    }
+                }
+                else if (weatherCode === 56 || weatherCode === 57) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle-fill"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
+                    if (weatherCode === 56){
+                        strCurrentWeather = "<b>Light Freezing Drizzle</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Heavy Freezing Drizzle</b>"
+                    }
+                }
+                else if (weatherCode === 61 || weatherCode === 63 || weatherCode === 65) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
+                    if (weatherCode === 61) {
+                        strCurrentWeather = "<b>Light Rain</b>"
+                    }
+                    else if (weatherCode === 63) {
+                        strCurrentWeather = "<b>Moderate Rain</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Heavy Rain</b>"
+                    }
+                }
+                else if (weatherCode === 66 || weatherCode === 67) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain-fill"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
+                    if (weatherCode === 66){
+                        strCurrentWeather = "<b>Light Freezing Rain</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Heavy Freezing Rain</b>"
+                    }
+                }
+                else if (weatherCode === 71 || weatherCode === 73 || weatherCode === 75) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow-fill"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
+                    if (weatherCode === 71) {
+                        strCurrentWeather = "<b>Light Snow Fall</b>"
+                    }
+                    else if (weatherCode === 73) {
+                        strCurrentWeather = "<b>Moderate Snow Fall</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Heavy Snow Fall</b>"
+                    }
+                }
+                else if (weatherCode === 77) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-sleet"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with sleet')
+                    strCurrentWeather = "<b>Snow Grains</b>"
+                }
+                else if (weatherCode === 80 || weatherCode === 81 || weatherCode === 82) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
+                    if (weatherCode === 80) {
+                        strCurrentWeather = "<b>Light Rain Showers</b>"
+                    }
+                    else if (weatherCode === 81) {
+                        strCurrentWeather = "<b>Moderate Rain Showers</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Heavy Rain Showers</b>"
+                    }
+                }
+                else if(weatherCode === 85 || weatherCode === 86){
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
+                    if (weatherCode === 85){
+                        strCurrentWeather = "<b>Light Snow Showers</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Heavy Snow Showers</b>"
+                    }
+                }
+                else if (weatherCode === 95) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
+                    strCurrentWeather = "<b>Thunderstorm</b>"
+                }
+                else if (weatherCode === 96 || weatherCode === 99) {
+                    document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain-fill"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
+                    if (weatherCode === 96){
+                        strCurrentWeather = "<b>Thunderstorm with Light Hail</b>"
+                    }
+                    else {
+                        strCurrentWeather = "<b>Thunderstrom with Heavy Hail</b>"
+                    }
+                }
+                else {
+                    document.querySelector('#weatherCodeImg').className="bi bi-exclamation-circle"
+                    document.querySelector('#weatherCodeImg').setAttribute('aria-label','Error')
+                    strCurrentWeather = "<b>Something went wrong</b>"
+                    console.log("This number is not regestered in the API")
+                }
+
+                // Returns the icon for the current conditions
+                document.querySelector('#txtCurrentWeather').innerHTML = strCurrentWeather
+
+
+                // Checks the temperature and changes the thermometer icon 
+                if(temperature < 40) {
+                    document.querySelector('#tempImg').className="bi bi-thermometer-low"
+                    document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
+                }
+                else if (temperature < 70) {
+                    document.querySelector('#tempImg').className="bi bi-thermometer-half"
+                    document.querySelector('#tempImg').setAttribute('aria-label','Error')
+                }
+                else {
+                    document.querySelector('#tempImg').className="bi bi-thermometer-high"
+                    document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
+                }
+
+                // Checks the humidity and changes the water drop icon 
+                if(humidity < 30) {
+                    document.querySelector('#humidImg').className="bi bi-droplet"
+                    document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
+                }
+                else if (humidity < 60) {
+                    document.querySelector('#humidImg').className="bi bi-droplet-half"
+                    document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
+                }
+                else {
+                    document.querySelector('#humidImg').className="bi bi-droplet-fill"
+                    document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
+                }
+                
+                // Completes the strings to return the data
+                strTemp += temperature + '°F</b></h6>'
+                strHumidity += humidity + '%</b></h6>'
+                strWeatherCode += weatherCode + '</h6>'
             
-            // Checks to see if the returned response is ok
-            if(!objResponse.ok){
-                throw new Error(`HTTP Error Status: ${objResponse.status}`)
-            }
-
-            // Sets const and let to store the data
-            const objData = await objResponse.json()
-            document.querySelector('#locationImg').setAttribute('aria-label','Location')
-            const currentData = objData.current
-            let temperature = currentData.temperature_2m
-            let humidity = currentData.relative_humidity_2m
-            let weatherCode = currentData.weather_code
-
-            // Create strings to return the data
-            let strTemp = '<h6><b>'
-            let strHumidity = '<h6><b>'
-            let strWeatherCode = '<h6> Weather Code: '
-
-            // Rounds the temperature up or down
-            temperature = Math.round(temperature)
-
-            // Checks the weather code and returns an icon and text for the current conditions
-            if (weatherCode === 0){
-                document.querySelector('#weatherCodeImg').className="bi bi-sun"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Sun')
-                strCurrentWeather = "<b>Clear Sky</b>"
-            }
-            else if(weatherCode === 1 || weatherCode === 2 || weatherCode === 3){
-                document.querySelector('#weatherCodeImg').className="bi bi-clouds"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Clouds')
-                if (weatherCode === 1) {
-                    strCurrentWeather = "<b>Mainly Clear</b>"
-                }
-                else if (weatherCode === 2) {
-                    strCurrentWeather = "<b>Partly Cloudy</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Overcast</b>"
-                }
-            }
-            else if(weatherCode === 45 || weatherCode === 48){
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-haze"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with haze')
-                if (weatherCode === 45){
-                    strCurrentWeather = "<b>Fog</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Depositing Rime Fog</b>"
-                }
-            }
-            else if (weatherCode === 51 || weatherCode === 53 || weatherCode === 55) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
-                if (weatherCode === 51) {
-                    strCurrentWeather = "<b>Light Drizzle</b>"
-                }
-                else if (weatherCode === 53) {
-                    strCurrentWeather = "<b>Moderate Drizzle</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Heavy Drizzle</b>"
-                }
-            }
-            else if (weatherCode === 56 || weatherCode === 57) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-drizzle-fill"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with drizzle')
-                if (weatherCode === 56){
-                    strCurrentWeather = "<b>Light Freezing Drizzle</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Heavy Freezing Drizzle</b>"
-                }
-            }
-            else if (weatherCode === 61 || weatherCode === 63 || weatherCode === 65) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
-                if (weatherCode === 61) {
-                    strCurrentWeather = "<b>Light Rain</b>"
-                }
-                else if (weatherCode === 63) {
-                    strCurrentWeather = "<b>Moderate Rain</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Heavy Rain</b>"
-                }
-            }
-            else if (weatherCode === 66 || weatherCode === 67) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain-fill"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
-                if (weatherCode === 66){
-                    strCurrentWeather = "<b>Light Freezing Rain</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Heavy Freezing Rain</b>"
-                }
-            }
-            else if (weatherCode === 71 || weatherCode === 73 || weatherCode === 75) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow-fill"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
-                if (weatherCode === 71) {
-                    strCurrentWeather = "<b>Light Snow Fall</b>"
-                }
-                else if (weatherCode === 73) {
-                    strCurrentWeather = "<b>Moderate Snow Fall</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Heavy Snow Fall</b>"
-                }
-            }
-            else if (weatherCode === 77) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-sleet"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with sleet')
-                strCurrentWeather = "<b>Snow Grains</b>"
-            }
-            else if (weatherCode === 80 || weatherCode === 81 || weatherCode === 82) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-rain"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain')
-                if (weatherCode === 80) {
-                    strCurrentWeather = "<b>Light Rain Showers</b>"
-                }
-                else if (weatherCode === 81) {
-                    strCurrentWeather = "<b>Moderate Rain Showers</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Heavy Rain Showers</b>"
-                }
-            }
-            else if(weatherCode === 85 || weatherCode === 86){
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-snow"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with snow')
-                if (weatherCode === 85){
-                    strCurrentWeather = "<b>Light Snow Showers</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Heavy Snow Showers</b>"
-                }
-            }
-            else if (weatherCode === 95) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
-                strCurrentWeather = "<b>Thunderstorm</b>"
-            }
-            else if (weatherCode === 96 || weatherCode === 99) {
-                document.querySelector('#weatherCodeImg').className="bi bi-cloud-lightning-rain-fill"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Cloud with rain and lightning')
-                if (weatherCode === 96){
-                    strCurrentWeather = "<b>Thunderstorm with Light Hail</b>"
-                }
-                else {
-                    strCurrentWeather = "<b>Thunderstrom with Heavy Hail</b>"
-                }
-            }
-            else {
-                document.querySelector('#weatherCodeImg').className="bi bi-exclamation-circle"
-                document.querySelector('#weatherCodeImg').setAttribute('aria-label','Error')
-                strCurrentWeather = "<b>Something went wrong</b>"
-                console.log("This number is not regestered in the API")
-            }
-
-            // Returns the icon for the current conditions
-            document.querySelector('#txtCurrentWeather').innerHTML = strCurrentWeather
-
-
-            // Checks the temperature and changes the thermometer icon 
-            if(temperature < 40) {
-                document.querySelector('#tempImg').className="bi bi-thermometer-low"
-                document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
-            }
-            else if (temperature < 70) {
-                document.querySelector('#tempImg').className="bi bi-thermometer-half"
-                document.querySelector('#tempImg').setAttribute('aria-label','Error')
-            }
-            else {
-                document.querySelector('#tempImg').className="bi bi-thermometer-high"
-                document.querySelector('#tempImg').setAttribute('aria-label','Temperature')
-            }
-
-            // Checks the humidity and changes the water drop icon 
-            if(humidity < 30) {
-                document.querySelector('#humidImg').className="bi bi-droplet"
-                document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
-            }
-            else if (humidity < 60) {
-                document.querySelector('#humidImg').className="bi bi-droplet-half"
-                document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
-            }
-            else {
-                document.querySelector('#humidImg').className="bi bi-droplet-fill"
-                document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
-            }
-            
-            // Completes the strings to return the data
-            strTemp += temperature + '°F</b></h6>'
-            strHumidity += humidity + '%</b></h6>'
-            strWeatherCode += weatherCode + '</h6>'
-        
             // Returns the data for temperature and humidity
             document.querySelector('#txtTemp').innerHTML = strTemp
             document.querySelector('#txtHumid').innerHTML = strHumidity 
@@ -287,13 +534,515 @@
             document.querySelector('#humidImg').className="bi bi-droplet-fill"
             document.querySelector('#humidImg').setAttribute('aria-label','Humidity')
             strHumidity = "<b>--%</b>"
-            
+                
             document.querySelector('#txtCurrentWeather').innerHTML = strCurrentWeather
             document.querySelector('#txtTemp').innerHTML = strTemp
             document.querySelector('#txtHumid').innerHTML = strHumidity 
+            console.log('Error fetching objData', objError)
+
+            document.querySelector('#locationImg').setAttribute('aria-label','Location')
+
+            document.querySelector('#txtTime1').innerHTML = strTime1
+            document.querySelector('#txtTime2').innerHTML = strTime2
+            document.querySelector('#txtTime3').innerHTML = strTime3
+            document.querySelector('#txtTime4').innerHTML = strTime4
+            document.querySelector('#txtTime5').innerHTML = strTime5
+            document.querySelector('#txtTime6').innerHTML = strTime6
+            document.querySelector('#txtTime7').innerHTML = strTime7
+            document.querySelector('#txtTime8').innerHTML = strTime8
+            document.querySelector('#txtTime9').innerHTML = strTime9
+            document.querySelector('#txtTime10').innerHTML = strTime10
+            document.querySelector('#txtTime11').innerHTML = strTime11
+            document.querySelector('#txtTime12').innerHTML = strTime12
+
+            x = 1
+            strTime = strTime1
+            while(x <= 12) {
+                weatherImg = "#weatherCodeImg" + x 
+                document.querySelector(weatherImg).className="bi bi-exclamation-circle"
+                document.querySelector(weatherImg).setAttribute('aria-label','Error')
+                x += 1
+            }
         }
+        getHorWeather()
     }
-    getWeather()
+
+    function getHorWeather() {
+        let time = new Date().toLocaleString('en-US', { timeZone: strTimezone });
+        let date = new Date(time);
+        let hour = date.getHours(); 
+        console.log(hour);
+
+        document.querySelector('#txtLoc').innerHTML = '<h4><b>Cookeville</b></h4>'
+        intTime1 = hour
+        intTime2 = hour + 1
+        intTime3 = hour + 2
+        intTime4 = hour + 3
+        intTime5 = hour + 4
+        intTime6 = hour + 5
+        intTime7 = hour + 6
+        intTime8 = hour + 7
+        intTime9 = hour + 8
+        intTime10 = hour + 9
+        intTime11 = hour + 10
+        intTime12 = hour + 11
+        strWeatherCode1 = 0
+        strTemp1 = '<h6><b>'
+        strTemp2 = '<h6><b>'
+        strTemp3 = '<h6><b>'
+        strTemp4 = '<h6><b>'
+        strTemp5 = '<h6><b>'
+        strTemp6 = '<h6><b>'
+        strTemp7 = '<h6><b>'
+        strTemp8 = '<h6><b>'
+        strTemp9 = '<h6><b>'
+        strTemp10 = '<h6><b>'
+        strTemp11 = '<h6><b>'
+        strTemp12 = '<h6><b>'
+
+        if(intTime1 < 12) {
+            if (intTime1 == 0){
+                strTime1 = 12
+            }
+            else {
+                strTime1 = intTime1
+            }
+            strTime1 += ' AM'
+        }
+        else {
+            if (intTime1 != 12) {
+                if (intTime1 > 23) {
+                    strTime1 = intTime1 % 12
+                    if (strTime1 == 0){
+                        strTime1 = 12
+                    }
+                    strTime1 += ' AM'
+                }
+                else {
+                    strTime1 = intTime1 % 12
+                    strTime1 += ' PM'
+                }
+            }
+            else   {
+                strTime1 = 12 + ' PM'
+            }
+        }
+        if(intTime2 < 12) {
+            if (intTime2 == 0){
+                strTime2 = 12
+            }
+            else {
+                strTime2 = intTime2
+            }
+            strTime2 += ' AM'
+        }
+        else {
+            if (intTime2 != 12) {
+                if (intTime2 > 23) {
+                    strTime2 = intTime2 % 12
+                    if (strTime2 == 0){
+                        strTime2 = 12
+                    }
+                    strTime2 += ' AM'
+                }
+                else {
+                    strTime2 = intTime2 % 12
+                    strTime2 += ' PM'
+                }
+            }
+            else   {
+                strTime2 = 12 + ' PM'
+            }
+        }
+        if(intTime3 < 12) {
+            if (intTime3 == 0){
+                strTime3 = 12
+            }
+            else {
+                strTime3 = intTime3
+            }
+            strTime3 += ' AM'
+        }
+        else {
+            if (intTime3 != 12) {
+                if (intTime3 > 23) {
+                    strTime3 = intTime3 % 12
+                    if (strTime3 == 0){
+                        strTime3 = 12
+                    }
+                    strTime3 += ' AM'
+                }
+                else {
+                    strTime3 = intTime3 % 12
+                    strTime3 += ' PM'
+                }
+            }
+            else   {
+                strTime3 = 12 + ' PM'
+            }
+        }
+        if(intTime4 < 12) {
+            if (intTime4 == 0){
+                strTime4 = 12
+            }
+            else {
+                strTime4 = intTime4
+            }
+            strTime4 += ' AM'
+        }
+        else {
+            if (intTime4 != 12) {
+                if (intTime4 > 23) {
+                    strTime4 = intTime4 % 12
+                    if (strTime4 == 0){
+                        strTime4 = 12
+                    }
+                    strTime4 += ' AM'
+                }
+                else {
+                    strTime4 = intTime4 % 12
+                    strTime4 += ' PM'
+                }
+            }
+            else   {
+                strTime4 = 12 + ' PM'
+            }
+        }
+        if(intTime5 < 12) {
+            if (intTime5 == 0){
+                strTime5 = 12
+            }
+            else {
+                strTime5 = intTime5
+            }
+            strTime5 += ' AM'
+        }
+        else {
+            if (intTime5 != 12) {
+                if (intTime5 > 23) {
+                    strTime5 = intTime5 % 12
+                    if (strTime5 == 0){
+                        strTime5 = 12
+                    }
+                    strTime5 += ' AM'
+                }
+                else {
+                    strTime5 = intTime5 % 12
+                    strTime5 += ' PM'
+                }
+            }
+            else   {
+                strTime5 = 12 + ' PM'
+            }
+        }
+        if(intTime6 < 12) {
+            if (intTime6 == 0){
+                strTime6 = 12
+            }
+            else {
+                strTime6 = intTime6
+            }
+            strTime6 += ' AM'
+        }
+        else {
+            if (intTime6 != 12) {
+                if (intTime6 > 23) {
+                    strTime6 = intTime6 % 12
+                    if (strTime6 == 0){
+                        strTime6 = 12
+                    }
+                    strTime6 += ' AM'
+                }
+                else {
+                    strTime6 = intTime6 % 12
+                    strTime6 += ' PM'
+                }
+            }
+            else   {
+                strTime6 = 12 + ' PM'
+            }
+        }
+        if(intTime7 < 12) {
+            if (intTime7 == 0){
+                strTime7 = 12
+            }
+            else {
+                strTime7 = intTime7
+            }
+            strTime7 += ' AM'
+        }
+        else {
+            if (intTime7 != 12) {
+                if (intTime7 > 23) {
+                    strTime7 = intTime7 % 12
+                    if (strTime7 == 0){
+                        strTime7 = 12
+                    }
+                    strTime7 += ' AM'
+                }
+                else {
+                    strTime7 = intTime7 % 12
+                    strTime7 += ' PM'
+                }
+            }
+            else   {
+                strTime7 = 12 + ' PM'
+            }
+        }
+        if(intTime8 < 12) {
+            if (intTime8 == 0){
+                strTime8 = 12
+            }
+            else {
+                strTime8 = intTime8
+            }
+            strTime8 += ' AM'
+        }
+        else {
+            if (intTime8 != 12) {
+                if (intTime8 > 23) {
+                    strTime8 = intTime8 % 12
+                    if (strTime8 == 0){
+                        strTime8 = 12
+                    }
+                    strTime8 += ' AM'
+                }
+                else {
+                    strTime8 = intTime8 % 12
+                    strTime8 += ' PM'
+                }
+            }
+            else   {
+                strTime8 = 12 + ' PM'
+            }
+        }
+        if(intTime9 < 12) {
+            if (intTime9 == 0){
+                strTime9 = 12
+            }
+            else {
+                strTime9 = intTime9
+            }
+            strTime9 += ' AM'
+        }
+        else {
+            if (intTime9 != 12) {
+                if (intTime9 > 23) {
+                    strTime9 = intTime9 % 12
+                    if (strTime9 == 0){
+                        strTime9 = 12
+                    }
+                    strTime9 += ' AM'
+                }
+                else {
+                    strTime9 = intTime9 % 12
+                    strTime9 += ' PM'
+                }
+            }
+            else   {
+                strTime9 = 12 + ' PM'
+            }
+        }
+        if(intTime10 < 12) {
+            if (intTime10 == 0){
+                strTime10 = 12
+            }
+            else {
+                strTime10 = intTime10
+            }
+            strTime10 += ' AM'
+        }
+        else {
+            if (intTime10 != 12) {
+                if (intTime10 > 23) {
+                    strTime10 = intTime10 % 12
+                    if (strTime10 == 0){
+                        strTime10 = 12
+                    }
+                    strTime10 += ' AM'
+                }
+                else {
+                    strTime10 = intTime10 % 12
+                    strTime10 += ' PM'
+                }
+            }
+            else   {
+                strTime10 = 12 + ' PM'
+            }
+        }
+        if(intTime11 < 12) {
+            if (intTime11 == 0){
+                strTime11 = 12
+            }
+            else {
+                strTime11 = intTime11
+            }
+            strTime11 += ' AM'
+        }
+        else {
+            if (intTime11 != 12) {
+                if (intTime11 > 23) {
+                    strTime11 = intTime11 % 12
+                    if (strTime11 == 0){
+                        strTime11 = 12
+                    }
+                    strTime11 += ' AM'
+                }
+                else {
+                    strTime11 = intTime11 % 12
+                    strTime11 += ' PM'
+                }
+            }
+            else   {
+                strTime11 = 12 + ' PM'
+            }
+        }
+        if(intTime12 < 12) {
+            if (intTime12 == 0){
+                strTime12 = 12
+            }
+            else {
+                strTime12 = intTime12
+            }
+            strTime12 += ' AM'
+        }
+        else {
+            if (intTime12 != 12) {
+                if (intTime12 > 23) {
+                    strTime12 = intTime12 % 12
+                    if (strTime12 == 0){
+                        strTime12 = 12
+                    }
+                    strTime12 += ' AM'
+                }
+                else {
+                    strTime12 = intTime12 % 12
+                    strTime12 += ' PM'
+                }
+            }
+            else   {
+                strTime12 = 12 + ' PM'
+            }
+        }
+            strTemp1 += Math.round(hourlyTemp[intTime1]) + '°F</b></h6>'
+            strTemp2 += Math.round(hourlyTemp[intTime2]) + '°F</b></h6>'
+            strTemp3 += Math.round(hourlyTemp[intTime3]) + '°F</b></h6>'
+            strTemp4 += Math.round(hourlyTemp[intTime4]) + '°F</b></h6>'
+            strTemp5 += Math.round(hourlyTemp[intTime5]) + '°F</b></h6>'
+            strTemp6 += Math.round(hourlyTemp[intTime6]) + '°F</b></h6>'
+            strTemp7 += Math.round(hourlyTemp[intTime7]) + '°F</b></h6>'
+            strTemp8 += Math.round(hourlyTemp[intTime8]) + '°F</b></h6>'
+            strTemp9 += Math.round(hourlyTemp[intTime9]) + '°F</b></h6>'
+            strTemp10 += Math.round(hourlyTemp[intTime10]) + '°F</b></h6>'
+            strTemp11 += Math.round(hourlyTemp[intTime11]) + '°F</b></h6>'
+            strTemp12 += Math.round(hourlyTemp[intTime12]) + '°F</b></h6>'
+
+            let weatherIndex = intTime1
+            x = 1
+            while(x <= 12) {
+                weatherImg = "#weatherCodeImg" + x 
+                if (hourlyConditions[weatherIndex] === 0){
+                    document.querySelector(weatherImg).className="bi bi-sun"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Sun')
+                }
+                else if(hourlyConditions[weatherIndex] === 1 || hourlyConditions[weatherIndex] === 2 || hourlyConditions[weatherIndex] === 3){
+                    document.querySelector(weatherImg).className="bi bi-clouds"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Clouds')
+                }
+                else if(hourlyConditions[weatherIndex] === 45 || hourlyConditions[weatherIndex] === 48){
+                    document.querySelector(weatherImg).className="bi bi-cloud-haze"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with haze')
+                }
+                else if (hourlyConditions[weatherIndex] === 51 || hourlyConditions[weatherIndex] === 53 || hourlyConditions[weatherIndex] === 55) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-drizzle"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with drizzle')
+                }
+                else if (hourlyConditions[weatherIndex] === 56 || hourlyConditions[weatherIndex] === 57) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-drizzle-fill"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with drizzle')
+                }
+                else if (hourlyConditions[weatherIndex] === 61 || hourlyConditions[weatherIndex] === 63 || hourlyConditions[weatherIndex] === 65) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-rain"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with rain')
+                }
+                else if (hourlyConditions[weatherIndex] === 66 || hourlyConditions[weatherIndex] === 67) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-rain-fill"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with rain')
+                }
+                else if (hourlyConditions[weatherIndex] === 71 || hourlyConditions[weatherIndex] === 73 || hourlyConditions[weatherIndex] === 75) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-snow-fill"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with snow')
+                }
+                else if (hourlyConditions[weatherIndex] === 77) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-sleet"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with sleet')
+                }
+                else if (hourlyConditions[weatherIndex] === 80 || hourlyConditions[weatherIndex]  === 81 || hourlyConditions[weatherIndex]  === 82) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-rain"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with rain')
+                }
+                else if(hourlyConditions[weatherIndex] === 85 || hourlyConditions[weatherIndex] === 86){
+                    document.querySelector(weatherImg).className="bi bi-cloud-snow"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with snow')
+                }
+                else if (hourlyConditions[weatherIndex] === 95) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-lightning-rain"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with rain and lightning')
+                }
+                else if (hourlyConditions[weatherIndex] === 96 || hourlyConditions[weatherIndex] === 99) {
+                    document.querySelector(weatherImg).className="bi bi-cloud-lightning-rain-fill"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Cloud with rain and lightning')
+                }
+                else {
+                    document.querySelector(weatherImg).className="bi bi-exclamation-circle"
+                    document.querySelector(weatherImg).setAttribute('aria-label','Error')
+                }
+                x += 1
+                weatherIndex += 1
+            }
+
+            document.querySelector('#txtTime1').innerHTML = strTime1
+            document.querySelector('#txtTemp1').innerHTML = strTemp1
+
+            document.querySelector('#txtTime2').innerHTML = strTime2
+            document.querySelector('#txtTemp2').innerHTML = strTemp2
+
+            document.querySelector('#txtTime3').innerHTML = strTime3
+            document.querySelector('#txtTemp3').innerHTML = strTemp3
+
+            document.querySelector('#txtTime4').innerHTML = strTime4
+            document.querySelector('#txtTemp4').innerHTML = strTemp4
+
+            document.querySelector('#txtTime5').innerHTML = strTime5
+            document.querySelector('#txtTemp5').innerHTML = strTemp5
+
+            document.querySelector('#txtTime6').innerHTML = strTime6
+            document.querySelector('#txtTemp6').innerHTML = strTemp6
+
+            document.querySelector('#txtTime7').innerHTML = strTime7
+            document.querySelector('#txtTemp7').innerHTML = strTemp7
+
+            document.querySelector('#txtTime8').innerHTML = strTime8
+            document.querySelector('#txtTemp8').innerHTML = strTemp8
+
+            document.querySelector('#txtTime9').innerHTML = strTime9
+            document.querySelector('#txtTemp9').innerHTML = strTemp9
+
+            document.querySelector('#txtTime10').innerHTML = strTime10
+            document.querySelector('#txtTemp10').innerHTML = strTemp10
+
+            document.querySelector('#txtTime11').innerHTML = strTime11
+            document.querySelector('#txtTemp11').innerHTML = strTemp11
+
+            document.querySelector('#txtTime12').innerHTML = strTime12
+            document.querySelector('#txtTemp12').innerHTML = strTemp12
+}
+
+    document.querySelector("#btnSwapSearch").addEventListener("click",(e) => {
+        document.querySelector('#frmResults').style.display = 'none'
+        document.querySelector('#frmSearch').style.display = 'block'
+        document.querySelector('#cboLocation').innerHTML = ''
+    })
 </script>
 
 <!-- Icon image was generated with Microsoft Copilot -->
